@@ -117,4 +117,4 @@ Natalie-Bakery/
 
 ## 📜 License
 
-Demo project for **Natalie Bakery**. All rights reserved. Built with ❤️ by [SoroushRF](https://github.com/SoroushRF).
+Demo project for **Natalie Bakery**. All rights reserved. Built by [SoroushRF](https://github.com/SoroushRF).
