@@ -12,6 +12,19 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
+# Official Bakery Metadata
+BAKERY_METADATA = {
+    'NAME': 'Natalie Bakery Limited',
+    'ADDRESS': '55 Glen Cameron Rd, Unit 14, Thornhill, ON L3T 5W2',
+    'PHONE': '+1 416-566-9693',
+    'INSTAGRAM': '@nataliebakery.toronto',
+    'HOURS': {
+        'MON_SAT': '9:00 AM – 8:00 PM',
+        'SUN': '10:00 AM – 7:00 PM',
+    }
+}
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

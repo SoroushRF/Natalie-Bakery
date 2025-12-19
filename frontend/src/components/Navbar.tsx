@@ -24,6 +24,7 @@ export default function Navbar() {
             <div className="ml-10 flex items-baseline space-x-8">
               <Link href="/" className="text-charcoal hover:text-gold transition-colors font-medium text-sm border-b border-transparent hover:border-gold">HOME</Link>
               <Link href="/shop" className="text-charcoal hover:text-gold transition-colors font-medium text-sm border-b border-transparent hover:border-gold">SHOP</Link>
+              <Link href="/contact" className="text-charcoal hover:text-gold transition-colors font-medium text-sm border-b border-transparent hover:border-gold">CONTACT</Link>
               <Link href="/cart" className="relative group">
                 <ShoppingBag className="h-6 w-6 text-charcoal group-hover:text-gold transition-colors" />
                 {cartCount > 0 && (
@@ -55,6 +56,7 @@ export default function Navbar() {
         <div className="md:hidden bg-cream border-b border-gold/20 pb-4 px-4 animate-in slide-in-from-top duration-300">
           <Link href="/" onClick={() => setIsOpen(false)} className="block py-2 text-charcoal font-medium">HOME</Link>
           <Link href="/shop" onClick={() => setIsOpen(false)} className="block py-2 text-charcoal font-medium">SHOP</Link>
+          <Link href="/contact" onClick={() => setIsOpen(false)} className="block py-2 text-charcoal font-medium">CONTACT</Link>
         </div>
       )}
     </nav>
