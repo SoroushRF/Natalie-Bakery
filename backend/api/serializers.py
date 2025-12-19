@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, CakeOption, Order, OrderItem
+from .models import Category, Product, CakeOption, Order, OrderItem, SiteContent, UIAsset, SiteFeature, SiteGalleryImage
 from django.utils import timezone
 from datetime import timedelta
 
@@ -65,3 +65,26 @@ class OrderSerializer(serializers.ModelSerializer):
         for item_data in items_data:
             OrderItem.objects.create(order=order, **item_data)
         return order
+
+class SiteFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteFeature
+        fields = '__all__'
+
+class SiteGalleryImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteGalleryImage
+        fields = '__all__'
+
+class SiteContentSerializer(serializers.ModelSerializer):
+    features = SiteFeatureSerializer(many=True, read_only=True)
+    gallery_images = SiteGalleryImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SiteContent
+        fields = '__all__'
+
+class UIAssetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UIAsset
+        fields = '__all__'

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, CakeOption, Order, OrderItem
+from .models import Category, Product, CakeOption, Order, OrderItem, SiteContent, UIAsset, SiteFeature, SiteGalleryImage
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -8,9 +8,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'is_custom_cake')
+    list_display = ('name', 'category', 'price', 'is_custom_cake', 'square_id')
     list_filter = ('category', 'is_custom_cake')
     prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name', 'square_id')
 
 @admin.register(CakeOption)
 class CakeOptionAdmin(admin.ModelAdmin):
@@ -26,3 +27,39 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer_name', 'pickup_datetime', 'status', 'total_price')
     list_filter = ('status', 'pickup_datetime')
     inlines = [OrderItemInline]
+
+class SiteFeatureInline(admin.TabularInline):
+    model = SiteFeature
+    extra = 1
+
+class SiteGalleryImageInline(admin.TabularInline):
+    model = SiteGalleryImage
+    extra = 1
+
+@admin.register(SiteContent)
+class SiteContentAdmin(admin.ModelAdmin):
+    inlines = [SiteFeatureInline, SiteGalleryImageInline]
+    fieldsets = (
+        ('Hero Section', {
+            'fields': ('hero_title', 'hero_subtitle', 'hero_main_image', 'hero_button_text')
+        }),
+        ('Story (Handcrafted) Section', {
+            'fields': ('about_title', 'about_description', 'about_side_image', 'about_side_image_2')
+        }),
+        ('Contact & Branding', {
+            'fields': ('contact_tagline', 'maps_url_override', 'footer_tagline', 'instagram_handle')
+        }),
+    )
+
+    def has_add_permission(self, request):
+        if self.model.objects.exists():
+            return False
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+@admin.register(UIAsset)
+class UIAssetAdmin(admin.ModelAdmin):
+    list_display = ('key', 'description')
+    search_fields = ('key', 'description')

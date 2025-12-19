@@ -4,6 +4,7 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
   try {
     const res = await fetch(`${API_URL}${endpoint}`, {
       ...options,
+      next: { revalidate: 60, ...options.next },
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -21,4 +22,13 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     console.error('API Fetch Error:', error);
     throw error;
   }
+};
+
+export const getSiteContent = async () => {
+    try {
+        return await fetchAPI('/site-content/', { cache: 'no-store' } as any);
+    } catch (err) {
+        console.error("Failed to fetch site content", err);
+        return null;
+    }
 };

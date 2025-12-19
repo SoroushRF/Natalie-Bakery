@@ -1,7 +1,10 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, Product, CakeOption, Order
-from .serializers import CategorySerializer, ProductSerializer, CakeOptionSerializer, OrderSerializer
+from .models import Category, Product, CakeOption, Order, SiteContent, UIAsset
+from .serializers import (CategorySerializer, ProductSerializer, CakeOptionSerializer, 
+                          OrderSerializer, SiteContentSerializer, UIAssetSerializer)
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
@@ -23,3 +26,14 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     # In a real app, you might restrict this to authenticated users or specific order tracking
+
+class SiteContentView(APIView):
+    def get(self, request):
+        config = SiteContent.load()
+        serializer = SiteContentSerializer(config, context={'request': request})
+        return Response(serializer.data)
+
+class UIAssetViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = UIAsset.objects.all()
+    serializer_class = UIAssetSerializer
+    lookup_field = 'key'

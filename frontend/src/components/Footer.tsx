@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Instagram, Phone, MapPin, Clock } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function Footer() {
   const [isOpen, setIsOpen] = useState(false);
+  const siteContent = useContent();
 
   useEffect(() => {
     const checkStatus = () => {
@@ -24,6 +26,10 @@ export default function Footer() {
     return () => clearInterval(interval);
   }, []);
 
+  const instagramLink = siteContent?.instagram_handle 
+    ? `https://instagram.com/${siteContent.instagram_handle.replace('@', '')}` 
+    : "https://instagram.com/nataliebakery.toronto";
+
   return (
     <footer className="bg-charcoal text-cream py-16 border-t border-gold/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,10 +38,10 @@ export default function Footer() {
           <div className="space-y-6">
             <h3 className="font-serif text-3xl tracking-tight">NATALIE <span className="text-gold">BAKERY</span></h3>
             <p className="text-cream/60 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
-              Natalie Bakery Limited &mdash; Where traditional Persian artistry meets modern luxury in the heart of Thornhill.
+              {siteContent?.footer_tagline || "Natalie Bakery Limited — Where traditional Persian artistry meets modern luxury in the heart of Thornhill."}
             </p>
             <div className="flex justify-center md:justify-start gap-4">
-              <a href="https://instagram.com/nataliebakery.toronto" target="_blank" className="text-gold hover:text-white transition-colors">
+              <a href={instagramLink} target="_blank" className="text-gold hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
             </div>

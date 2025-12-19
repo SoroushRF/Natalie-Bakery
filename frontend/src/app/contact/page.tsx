@@ -1,12 +1,14 @@
 "use client";
 import { Mail, Phone, MapPin, Instagram, Clock, Send } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function Contact() {
+  const siteContent = useContent();
   const businessInfo = {
     name: "Natalie Bakery Limited",
     address: "55 Glen Cameron Rd, Unit 14, Thornhill, ON L3T 5W2",
     phone: "+1 416-566-9693",
-    instagram: "@nataliebakery.toronto",
+    instagram: siteContent?.instagram_handle || "@nataliebakery.toronto",
     hours: [
       { days: "Monday - Saturday", time: "9:00 AM – 8:00 PM" },
       { days: "Sunday", time: "10:00 AM – 7:00 PM" },
@@ -85,7 +87,7 @@ export default function Contact() {
           <div className="space-y-8">
              <div className="h-[400px] w-full border border-gold/20 shadow-xl grayscale hover:grayscale-0 transition-all duration-700 overflow-hidden group">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.9427320490!2d-79.4187!3d43.8153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b2d6ffaaaaaaa%3A0x7d9f9693!2s55+Glen+Cameron+Rd+%2314%2C+Thornhill%2C+ON+L3T+5W2!5e0!3m2!1sen!2sca!4v1713555000000!5m2!1sen!2sca" 
+                  src={siteContent?.maps_url_override || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.9427320490!2d-79.4187!3d43.8153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b2d6ffaaaaaaa%3A0x7d9f9693!2s55+Glen+Cameron+Rd+%2314%2C+Thornhill%2C+ON+L3T+5W2!5e0!3m2!1sen!2sca!4v1713555000000!5m2!1sen!2sca"} 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
