@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/SoroushRF/Natalie-Bakery/main/frontend/public/logo.png" alt="Natalie Bakery Logo" width="120" />
-</p>
 
 # 🧁 Natalie Bakery
 
