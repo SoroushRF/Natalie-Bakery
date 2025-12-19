@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 51, 51, 51;
+  --background-start-rgb: 245, 245, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #f5f5dc;
+  overflow-x: hidden;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif text-charcoal;
+  }
+}
+
+.btn-primary {
+  @apply bg-gold text-white px-6 py-3 rounded-none transition-all duration-300 hover:bg-charcoal uppercase tracking-widest text-sm font-semibold;
+}
+
+.card {
+  @apply bg-white border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-300;
+}
