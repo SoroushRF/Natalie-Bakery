@@ -31,7 +31,7 @@ export default function Cart() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-10 py-4">
         <ShoppingBag className="h-16 w-16 text-gold mb-6 opacity-20" />
         <h2 className="text-3xl font-serif text-charcoal mb-4">Your bag is empty</h2>
         <p className="text-charcoal/60 mb-8 max-w-xs text-center">It seems you haven't added any delicacies to your selection yet.</p>
@@ -43,16 +43,16 @@ export default function Cart() {
   }
 
   return (
-    <div className="bg-cream min-h-screen py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-serif text-charcoal mb-12">Your Shopping Bag</h1>
+    <div className="bg-cream min-h-screen py-8 md:py-16">
+      <div className="max-w-7xl mx-auto px-10 sm:px-6 lg:px-8">
+        <h1 className="text-3xl md:text-4xl font-serif text-charcoal mb-8 md:mb-12 text-center md:text-left">Your Shopping Bag</h1>
 
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Items List */}
           <div className="lg:col-span-2 space-y-6">
             {items.map((item: any) => (
-              <div key={item.cartId} className="bg-white p-6 flex flex-col sm:flex-row gap-6 items-center border border-gold/10">
-                <div className="w-24 h-24 flex-shrink-0">
+              <div key={item.cartId} className="bg-white p-4 md:p-6 flex flex-col sm:flex-row gap-4 md:gap-6 items-center border border-gold/10 relative max-w-[85%] mx-auto sm:max-w-full">
+                <div className="w-[60%] mx-auto sm:w-24 sm:mx-0 aspect-square sm:aspect-auto sm:h-24 flex-shrink-0 bg-cream/20 overflow-hidden shadow-sm">
                   <img 
                     src={item.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80'} 
                     alt={item.name}
@@ -60,37 +60,37 @@ export default function Cart() {
                   />
                 </div>
                 
-                <div className="flex-1 text-center sm:text-left">
-                  <h3 className="font-serif text-xl text-charcoal">{item.name}</h3>
-                  <div className="text-[10px] uppercase tracking-widest text-gold mt-1">
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <h3 className="font-serif text-lg md:text-xl text-charcoal">{item.name}</h3>
+                  <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-gold font-bold">
                     {item.size}
                     {item.flavor && <> &bull; {item.flavor}</>}
                     {item.filling && <> &bull; {item.filling}</>}
                   </div>
-                  <p className="text-charcoal/60 text-sm mt-2">${Number(item.price).toFixed(2)}</p>
+                  <p className="text-charcoal/60 text-xs mt-1 md:mt-2">${Number(item.price).toFixed(2)} / {item.unit || 'unit'}</p>
                 </div>
 
                 <div className="flex items-center border border-gold/20 h-10 w-fit bg-cream/30">
                   <button 
                     onClick={() => handleDecreaseQuantity(item)} 
-                    className="h-full px-3 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"
+                    className="h-full px-4 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"
                   >
                     &minus;
                   </button>
                   <span className="w-10 text-center text-sm font-sans font-bold text-charcoal">{item.quantity}</span>
                   <button 
                     onClick={() => updateQuantity(item.cartId, item.quantity + 1)} 
-                    className="h-full px-3 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10"
+                    className="h-full px-4 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10"
                   >
                     +
                   </button>
                 </div>
 
-                <div className="w-24 text-right">
-                  <p className="font-bold text-charcoal">${(item.price * item.quantity).toFixed(2)}</p>
+                <div className="w-full sm:w-24 text-center sm:text-right border-t sm:border-t-0 pt-4 sm:pt-0 mt-2 sm:mt-0">
+                  <p className="font-bold text-charcoal text-lg md:text-base">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
-                <button onClick={() => handleRemoveClick(item)} className="p-2 text-charcoal/30 hover:text-red-500 transition-colors">
+                <button onClick={() => handleRemoveClick(item)} className="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 p-2 text-charcoal/30 hover:text-red-500 transition-colors">
                   <Trash2 className="h-5 w-5" />
                 </button>
               </div>

@@ -106,29 +106,29 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
   return (
     <div className="bg-cream min-h-screen py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-16 items-start">
+      <div className="max-w-7xl mx-auto px-10 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
           {/* Image */}
-          <div className="card p-0 overflow-hidden">
+          <div className="card p-0 overflow-hidden shadow-2xl mx-auto max-w-[85%] md:max-w-full">
             <img 
               src={product.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1200&q=80'} 
               alt={product.name}
-              className="w-full h-auto object-cover aspect-square"
+              className="w-full h-auto object-cover aspect-square md:aspect-[4/5] lg:aspect-square"
             />
           </div>
 
           {/* Content */}
           <div className="space-y-8">
             <div>
-              <span className="text-xs uppercase tracking-[0.4em] text-gold mb-2 block">{product.category_name}</span>
-              <h1 className="text-5xl font-serif text-charcoal mb-4">{product.name}</h1>
-              <div className="flex items-baseline gap-2">
-                <p className="text-3xl text-gold font-light">
+              <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold mb-2 block">{product.category_name}</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-4 leading-tight">{product.name}</h1>
+              <div className="flex items-baseline gap-3">
+                <p className="text-2xl md:text-3xl text-gold font-light">
                   ${finalPrice.toFixed(2)}
-                  <span className="text-sm opacity-60 ml-1">/ {product.unit}</span>
+                  <span className="text-xs md:text-sm opacity-60 ml-1">/ {product.unit}</span>
                 </p>
                 {product.is_custom_cake && finalPrice > parseFloat(product.price) && (
-                  <p className="text-sm text-charcoal/40 line-through">${parseFloat(product.price).toFixed(2)}</p>
+                  <p className="text-xs md:text-sm text-charcoal/40 line-through">${parseFloat(product.price).toFixed(2)}</p>
                 )}
               </div>
             </div>
@@ -139,8 +139,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
             {cakeOptions.length > 0 && (
               <div className="space-y-6 pt-6 border-t border-gold/10">
-                <div className="flex justify-between items-center">
-                    <h3 className="font-serif text-xl text-charcoal">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h3 className="font-serif text-lg md:text-xl text-charcoal">
                         {product.is_custom_cake ? "Customization Options" : "Product Options"}
                     </h3>
                     {product.is_custom_cake && (
@@ -150,20 +150,20 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     )}
                 </div>
                 {product.is_custom_cake && (
-                    <p className="text-xs text-gold uppercase tracking-widest font-bold">Note: Custom cakes require 3-day lead time.</p>
+                    <p className="text-[10px] text-gold uppercase tracking-widest font-bold bg-gold/5 p-2 border-l-2 border-gold">Note: Custom cakes require 3-day lead time.</p>
                 )}
                 
                 <div className="grid grid-cols-1 gap-6">
                   {/* Flavor */}
                   {flavors.length > 0 && (
                     <div>
-                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Flavor</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <label className="text-[10px] uppercase tracking-widest text-charcoal/60 mb-3 block font-bold">Choose Flavor</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {flavors.map((f) => (
                               <button
                                   key={f.id}
                                   onClick={() => setSelectedFlavor(f.name)}
-                                  className={`text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFlavor === f.name ? 'border-gold bg-gold/5' : 'border-gold/10 hover:border-gold/30'}`}
+                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFlavor === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
                               >
                                   <span>{f.name}</span>
                                   {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
@@ -176,13 +176,13 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   {/* Filling */}
                   {fillings.length > 0 && (
                     <div>
-                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Filling</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <label className="text-[10px] uppercase tracking-widest text-charcoal/60 mb-3 block font-bold">Choose Filling</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {fillings.map((f) => (
                               <button
                                   key={f.id}
                                   onClick={() => setSelectedFilling(f.name)}
-                                  className={`text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFilling === f.name ? 'border-gold bg-gold/5' : 'border-gold/10 hover:border-gold/30'}`}
+                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFilling === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
                               >
                                   <span>{f.name}</span>
                                   {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
@@ -195,16 +195,16 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   {/* Size */}
                   {sizes.length > 0 && (
                     <div>
-                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Select Size</label>
+                      <label className="text-[10px] uppercase tracking-widest text-charcoal/60 mb-3 block font-bold">Select Size</label>
                       <div className="flex flex-wrap gap-2">
                         {sizes.map((s) => (
                           <button
                             key={s.id}
                             onClick={() => setSelectedSize(s.name)}
-                            className={`px-6 py-2 border transition-all flex flex-col items-center min-w-[100px] ${selectedSize === s.name ? 'bg-gold text-white border-gold' : 'border-gold/20 text-charcoal hover:border-gold'}`}
+                            className={`px-4 md:px-6 py-2 border transition-all flex flex-col items-center min-w-[80px] md:min-w-[100px] ${selectedSize === s.name ? 'bg-gold text-white border-gold shadow-md' : 'border-gold/20 text-charcoal hover:border-gold'}`}
                           >
-                            <span className="text-sm font-medium">{s.name}</span>
-                            {parseFloat(s.price_modifier) > 0 && <span className={`text-[9px] uppercase tracking-tighter ${selectedSize === s.name ? 'text-white/80' : 'text-gold/60'}`}>+${s.price_modifier}</span>}
+                            <span className="text-xs md:text-sm font-medium">{s.name}</span>
+                            {parseFloat(s.price_modifier) > 0 && <span className={`text-[8px] md:text-[9px] uppercase tracking-tighter ${selectedSize === s.name ? 'text-white/80' : 'text-gold/60'}`}>+${s.price_modifier}</span>}
                           </button>
                         ))}
                       </div>

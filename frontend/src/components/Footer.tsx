@@ -6,9 +6,11 @@ import { useContent } from "@/context/ContentContext";
 
 export default function Footer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const siteContent = useContent();
 
   useEffect(() => {
+    setMounted(true);
     const checkStatus = () => {
       const now = new Date();
       const day = now.getDay(); // 0 = Sun, 1 = Mon, ...
@@ -31,7 +33,7 @@ export default function Footer() {
     : "https://instagram.com/nataliebakery.toronto";
 
   return (
-    <footer className="bg-charcoal text-cream py-16 border-t border-gold/20">
+    <footer className="bg-charcoal text-cream py-10 md:py-16 border-t border-gold/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
           {/* Brand */}
@@ -81,12 +83,14 @@ export default function Footer() {
                 <span>10:00 AM – 7:00 PM</span>
               </div>
               
-              <div className="pt-2 flex justify-center">
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${isOpen ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
-                  <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOpen ? 'bg-green-500' : 'bg-red-500'}`} />
-                  {isOpen ? 'Open Now' : 'Closed'}
+              {mounted && (
+                <div className="pt-2 flex justify-center">
+                  <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${isOpen ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOpen ? 'bg-green-500' : 'bg-red-500'}`} />
+                    {isOpen ? 'Open Now' : 'Closed'}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

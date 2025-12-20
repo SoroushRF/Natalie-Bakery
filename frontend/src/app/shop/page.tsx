@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { fetchAPI } from "@/utils/api";
-import { Search, SlidersHorizontal } from "lucide-react";
+import ProductCard from "@/components/ProductCard";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
@@ -33,79 +32,55 @@ export default function Shop() {
     : products.filter((p: any) => p.category_name.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
-    <div className="bg-cream min-h-screen py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header className="mb-12">
-          <h1 className="text-4xl font-serif text-charcoal mb-4 tracking-tight">Our Collection</h1>
-          <p className="text-charcoal/60 max-w-xl">
-            Browse our full range of pastries, artisanal breads, and custom celebratory cakes.
+    <div className="bg-cream min-h-screen py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-10 sm:px-6 lg:px-8">
+        <header className="mb-8 md:mb-12 text-center md:text-left">
+          <h1 className="text-3xl md:text-4xl font-serif text-charcoal mb-4 tracking-tight uppercase tracking-widest">Our Collection</h1>
+          <p className="text-charcoal/60 max-w-xl mx-auto md:mx-0 text-sm md:text-base">
+            Browse our full range of pastries, artisanal breads, and custom celebratory cakes. Every item is baked fresh daily.
           </p>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Sidebar Filters */}
-          <aside className="lg:w-64 flex-shrink-0">
-            <div className="sticky top-32">
-              <h3 className="font-serif text-lg mb-6 uppercase tracking-widest text-gold border-b border-gold/20 pb-2">Categories</h3>
-              <div className="space-y-3">
-                <button 
-                  onClick={() => setSelectedCategory("all")}
-                  className={`block text-sm uppercase tracking-wider transition-colors ${selectedCategory === "all" ? "text-gold font-bold" : "text-charcoal/60 hover:text-charcoal"}`}
-                >
-                  All Collections
-                </button>
-                {categories.map((cat: any) => (
-                  <button 
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.name)}
-                    className={`block text-sm uppercase tracking-wider transition-colors ${selectedCategory === cat.name ? "text-gold font-bold" : "text-charcoal/60 hover:text-charcoal"}`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </aside>
-
-          {/* Product Grid */}
-          <div className="flex-1">
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white/50 h-96 animate-pulse" />
-                ))}
-              </div>
-            ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProducts.map((product: any) => (
-                  <div key={product.id} className="group card flex flex-col items-center text-center">
-                    <div className="relative w-full aspect-square mb-6 overflow-hidden">
-                      <img 
-                        src={product.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'} 
-                        alt={product.name}
-                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                      />
-                      {product.is_custom_cake && (
-                        <div className="absolute top-4 right-4 bg-charcoal text-cream text-[10px] px-3 py-1 uppercase tracking-widest font-bold">
-                          Custom
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-gold mb-2">{product.category_name}</span>
-                    <h3 className="font-serif text-xl mb-2 text-charcoal">{product.name}</h3>
-                    <p className="text-charcoal/60 font-semibold mb-6 italic">${product.price}</p>
-                    <Link href={`/product/${product.slug}`} className="btn-primary w-full text-center">
-                      View Details
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 bg-white/30 border border-dashed border-gold/30">
-                <p className="text-charcoal/40 font-serif">Empty in this collection for now.</p>
-              </div>
-            )}
+        {/* Categories Bar - Responsive */}
+        <div className="mb-10 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
+          <div className="flex md:flex-wrap gap-2 md:gap-4 pb-2 md:pb-0 min-w-max md:min-w-0">
+            <button 
+              onClick={() => setSelectedCategory("all")}
+              className={`px-6 py-2 rounded-full text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold transition-all border ${selectedCategory === "all" ? "bg-gold text-white border-gold shadow-md" : "bg-white/50 text-charcoal/60 border-gold/10 hover:border-gold/30"}`}
+            >
+              All Collections
+            </button>
+            {categories.map((cat: any) => (
+              <button 
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`px-6 py-2 rounded-full text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold transition-all border ${selectedCategory === cat.name ? "bg-gold text-white border-gold shadow-md" : "bg-white/50 text-charcoal/60 border-gold/10 hover:border-gold/30"}`}
+              >
+                {cat.name}
+              </button>
+            ))}
           </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className="flex-1">
+          {isLoading ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="bg-white/50 aspect-square animate-pulse" />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+              {filteredProducts.map((product: any) => (
+                <ProductCard key={product.id} product={product} variant="recent" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-white/30 border border-dashed border-gold/30">
+              <p className="text-charcoal/40 font-serif">No creations found in this collection.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

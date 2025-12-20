@@ -18,17 +18,17 @@ export default function Contact() {
   return (
     <div className="bg-cream min-h-screen pt-12 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header className="text-center mb-20">
-          <span className="text-xs uppercase tracking-[0.5em] text-gold font-bold mb-4 block">Get in Touch</span>
-          <h1 className="text-5xl md:text-6xl font-serif text-charcoal mb-6">Contact Us</h1>
-          <div className="w-24 h-1 bg-gold mx-auto" />
+        <header className="text-center mb-12 md:mb-20">
+          <span className="text-[10px] md:text-xs uppercase tracking-[0.5em] text-gold font-bold mb-4 block">Get in Touch</span>
+          <h1 className="text-4xl md:text-6xl font-serif text-charcoal mb-6">Contact Us</h1>
+          <div className="w-16 md:w-24 h-1 bg-gold mx-auto" />
         </header>
 
-        <div className="grid lg:grid-cols-2 gap-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
           {/* Information Column */}
           <div className="space-y-12">
             <section>
-              <h2 className="text-3xl font-serif text-charcoal mb-8 italic">Visit Our Boutique</h2>
+              <h2 className="text-2xl md:text-3xl font-serif text-charcoal mb-8 italic text-center lg:text-left">Visit Our Boutique</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="bg-gold/10 p-3 rounded-full">

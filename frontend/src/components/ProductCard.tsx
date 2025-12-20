@@ -38,16 +38,16 @@ export default function ProductCard({ product, variant = 'featured' }: ProductCa
         </div>
       </div>
 
-      <div className={`flex-grow ${isRecent ? "flex justify-between items-start" : ""}`}>
-        <div className={isRecent ? "" : "space-y-2"}>
-          <h3 className={`font-serif text-charcoal transition-colors group-hover/card:text-gold ${isRecent ? 'text-lg' : 'text-xl mb-2'}`}>
+      <div className={`flex-grow ${isRecent ? "flex flex-col md:flex-row md:justify-between items-start gap-1" : ""}`}>
+        <div className={isRecent ? "" : "space-y-1 md:space-y-2"}>
+          <h3 className={`font-serif text-charcoal transition-colors group-hover/card:text-gold ${isRecent ? 'text-sm md:text-lg leading-snug' : 'text-lg md:text-xl mb-1 md:mb-2'}`}>
             {product.name}
           </h3>
-          {isRecent && <p className="text-xs text-charcoal/40 uppercase tracking-widest mt-1">{product.category_name}</p>}
+          {isRecent && <p className="text-[10px] md:text-xs text-charcoal/40 uppercase tracking-widest">{product.category_name}</p>}
         </div>
-        <p className={`${isRecent ? 'text-charcoal font-medium' : 'text-gold font-semibold mb-4'} `}>
+        <p className={`${isRecent ? 'text-sm md:text-base text-charcoal font-medium whitespace-nowrap' : 'text-gold font-semibold mb-4'} `}>
           ${parseFloat(product.price).toFixed(2)}
-          <span className="text-[10px] opacity-60 ml-1">/ {product.unit}</span>
+          <span className="text-[9px] md:text-[10px] opacity-60 ml-1">/ {product.unit}</span>
         </p>
       </div>
 
