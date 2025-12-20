@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAPI } from "@/utils/api";
 import { useCartStore, generateCartId } from "@/store/useCartStore";
@@ -21,6 +21,32 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const addItem = useCartStore((state) => state.addItem);
   const cartItems = useCartStore((state) => state.items);
   const router = useRouter();
+
+  const [showSticky, setShowSticky] = useState(false);
+  const priceRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // If price is not in view (entry.isIntersecting is false), show sticky
+        setShowSticky(!entry.isIntersecting);
+      },
+      { 
+        threshold: 0,
+        rootMargin: '-80px 0px 0px 0px' // Offset for the fixed navbar (h-20 = 80px)
+      }
+    );
+
+    if (priceRef.current) {
+      observer.observe(priceRef.current);
+    }
+
+    return () => {
+      if (priceRef.current) {
+        observer.unobserve(priceRef.current);
+      }
+    };
+  }, [isLoading]);
 
   // Find if current product/option combo is in bag
   const currentOptions = product?.is_custom_cake ? {
@@ -106,6 +132,79 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
   return (
     <div className="bg-cream min-h-screen py-12">
+      {/* Sticky Price Header */}
+      <AnimatePresence>
+        {showSticky && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            className="fixed top-20 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gold/10 shadow-lg py-3 px-4"
+          >
+            <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 md:gap-4">
+              <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
+                <img 
+                  src={product.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80'} 
+                  alt={product.name} 
+                  className="w-10 h-10 object-cover rounded shadow-sm flex-shrink-0" 
+                />
+                <div className="flex flex-col min-w-0 justify-center h-10 md:h-12">
+                  <h4 className="font-serif text-charcoal text-base md:text-xl truncate max-w-[140px] md:max-w-xs leading-tight">{product.name}</h4>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 md:gap-6">
+                <div className="text-right flex flex-col items-end">
+                  <p className={`text-lg md:text-2xl font-serif leading-none transition-colors duration-300 ${finalPrice !== parseFloat(product.price) ? 'text-gold' : 'text-charcoal'}`}>
+                     ${finalPrice.toFixed(2)}
+                  </p>
+                  <AnimatePresence>
+                    {finalPrice !== parseFloat(product.price) && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 5 }}
+                        className="text-[9px] md:text-[10px] text-charcoal/40 line-through mt-0.5"
+                      >
+                        ${parseFloat(product.price).toFixed(2)}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <motion.button 
+                  onClick={handleAddToCart}
+                  className={`btn-primary text-[9px] md:text-[10px] h-10 md:h-12 px-0 flex items-center justify-center relative overflow-hidden active:scale-[0.96] transition-all duration-500 whitespace-nowrap w-[130px] md:w-[175px] flex-shrink-0 ${addedToCart ? 'bg-charcoal text-gold border-charcoal' : ''}`}
+                >
+                  <AnimatePresence mode="wait">
+                    {addedToCart ? (
+                      <motion.div 
+                        key="added"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        className="flex items-center gap-1.5 md:gap-2 justify-center w-full"
+                      >
+                        <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
+                        <span className="font-bold tracking-[0.15em]">ADDED</span>
+                      </motion.div>
+                    ) : (
+                      <motion.div 
+                        key="add"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        className="flex items-center justify-center w-full"
+                      >
+                        <span className="font-bold tracking-[0.1em] md:tracking-[0.2em]">ADD TO BAG</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="max-w-7xl mx-auto px-10 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
           {/* Image */}
@@ -122,7 +221,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             <div>
               <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold mb-2 block">{product.category_name}</span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-4 leading-tight">{product.name}</h1>
-              <div className="flex items-baseline gap-3">
+              <div ref={priceRef} className="flex items-baseline gap-3">
               <p className={`text-2xl md:text-3xl font-light transition-colors duration-300 ${finalPrice !== parseFloat(product.price) ? 'text-gold' : 'text-charcoal'}`}>
                 ${finalPrice.toFixed(2)}
                 <span className="text-xs md:text-sm opacity-60 ml-1">/ {product.unit}</span>
