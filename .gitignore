@@ -39,3 +39,7 @@ Thumbs.db
 
 # Docker
 .docker/
+
+# Playwright
+frontend/playwright-report/
+frontend/test-results/

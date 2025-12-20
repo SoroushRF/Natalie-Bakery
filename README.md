@@ -1,4 +1,3 @@
-
 # 🧁 Natalie Bakery
 
 <p align="center">
@@ -19,6 +18,7 @@
 **Natalie Bakery** is a high-end, full-stack e-commerce platform meticulously crafted for luxury retail and custom celebratory cake orders. Inspired by the rich traditions of Persian baking, the application merges a sophisticated "Persian Luxury" aesthetic with robust business logic to provide a seamless, premium shopping experience.
 
 ### 🎨 Design Philosophy
+
 The UI is defined by a curated palette that evokes elegance and warmth:
 *   **Cream** (`#F5F5DC`) - For a soft, inviting canvas.
 *   **Gold** (`#D4AF37`) - Representing the artisan quality of the products.
@@ -39,6 +39,7 @@ The UI is defined by a curated palette that evokes elegance and warmth:
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS
 - **State Management**: Zustand
@@ -46,6 +47,7 @@ The UI is defined by a curated palette that evokes elegance and warmth:
 - **Date Handling**: date-fns
 
 ### Backend
+
 - **Framework**: Django 5 + Django REST Framework (DRF)
 - **Database**: PostgreSQL (Production) / SQLite (Dev)
 - **Containerization**: Docker & Docker Compose
@@ -55,12 +57,14 @@ The UI is defined by a curated palette that evokes elegance and warmth:
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/SoroushRF/Natalie-Bakery.git
 cd Natalie-Bakery
 ```
 
 ### 2. Backend Setup
+
 ```powershell
 cd backend
 python -m venv venv
@@ -72,6 +76,7 @@ python manage.py runserver
 ```
 
 ### 3. Frontend Setup
+
 ```bash
 cd frontend
 npm install
@@ -88,6 +93,36 @@ For a streamlined production-ready environment:
 
 ```bash
 docker-compose up --build
+```
+
+---
+
+## 🧪 Testing Suite
+
+The application includes a comprehensive three-tier testing strategy to ensure reliability and data integrity.
+
+### 1. Backend Logic & API Contract (Django)
+
+Verifies business rules, pricing modifiers, and ensures the API preserves its data contract with the frontend.
+```powershell
+cd backend
+python manage.py test api.tests
+```
+
+### 2. Frontend State & UI (Vitest)
+
+Tests the Zustand cart store logic and ensures UI components (like the carousel and badges) behave correctly across different product states.
+```powershell
+cd frontend
+npm test
+```
+
+### 3. End-to-End User Journey (Playwright)
+
+Simulates real user interactions in a headless browser: Home -> Product customization -> Cart validation.
+```powershell
+cd frontend
+npm run test:e2e
 ```
 
 ---
