@@ -10,7 +10,10 @@ export default function ProductCard({ product, variant = 'featured' }: ProductCa
   const isRecent = variant === 'recent';
   
   return (
-    <div className={`group/card flex flex-col h-full ${!isRecent ? 'card items-center text-center' : ''}`}>
+    <Link 
+      href={`/product/${product.slug}`}
+      className={`group/card flex flex-col h-full ${!isRecent ? 'card items-center text-center' : ''}`}
+    >
       <div className={`relative w-full overflow-hidden ${isRecent ? 'aspect-[4/5] mb-4 bg-cream' : 'aspect-square mb-6'}`}>
         <img 
           src={product.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'} 
@@ -45,22 +48,21 @@ export default function ProductCard({ product, variant = 'featured' }: ProductCa
           </h3>
           {isRecent && <p className="text-[10px] md:text-xs text-charcoal/40 uppercase tracking-widest">{product.category_name}</p>}
         </div>
-        <p className={`${isRecent ? 'text-sm md:text-base text-charcoal font-medium whitespace-nowrap' : 'text-gold font-semibold mb-4'} `}>
+        <div className={`${isRecent ? 'text-sm md:text-base text-charcoal font-medium whitespace-nowrap' : 'text-gold font-semibold mb-4'} `}>
           ${parseFloat(product.price).toFixed(2)}
           <span className="text-[9px] md:text-[10px] opacity-60 ml-1">/ {product.unit}</span>
-        </p>
+        </div>
       </div>
 
-      <Link 
-        href={`/product/${product.slug}`} 
+      <div 
         className={isRecent 
-            ? "mt-4 text-[10px] uppercase tracking-[0.3em] font-bold text-gold flex items-center gap-2 hover:gap-4 transition-all"
-            : "text-xs uppercase tracking-[0.2em] text-charcoal/60 hover:text-gold transition-colors"
+            ? "mt-4 text-[10px] uppercase tracking-[0.3em] font-bold text-gold flex items-center gap-2 group-hover/card:gap-4 transition-all"
+            : "text-xs uppercase tracking-[0.2em] text-charcoal/60 group-hover/card:text-gold transition-colors"
         }
       >
         {isRecent ? "Detail" : "View Creation"}
         {isRecent && <span className="h-px w-8 bg-gold/30"></span>}
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 }

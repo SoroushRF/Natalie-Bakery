@@ -163,7 +163,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                               <button
                                   key={f.id}
                                   onClick={() => setSelectedFlavor(f.name)}
-                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFlavor === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
+                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center rounded-md ${selectedFlavor === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
                               >
                                   <span>{f.name}</span>
                                   {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
@@ -182,7 +182,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                               <button
                                   key={f.id}
                                   onClick={() => setSelectedFilling(f.name)}
-                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFilling === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
+                                  className={`text-xs md:text-sm py-3 px-4 border text-left transition-all flex justify-between items-center rounded-md ${selectedFilling === f.name ? 'border-gold bg-gold/5 ring-1 ring-gold/20' : 'border-gold/10 hover:border-gold/30'}`}
                               >
                                   <span>{f.name}</span>
                                   {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
@@ -201,7 +201,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                           <button
                             key={s.id}
                             onClick={() => setSelectedSize(s.name)}
-                            className={`px-4 md:px-6 py-2 border transition-all flex flex-col items-center min-w-[80px] md:min-w-[100px] ${selectedSize === s.name ? 'bg-gold text-white border-gold shadow-md' : 'border-gold/20 text-charcoal hover:border-gold'}`}
+                            className={`px-4 md:px-6 py-2 border transition-all flex flex-col items-center min-w-[80px] md:min-w-[100px] rounded-md ${selectedSize === s.name ? 'bg-gold text-white border-gold shadow-md' : 'border-gold/20 text-charcoal hover:border-gold'}`}
                           >
                             <span className="text-xs md:text-sm font-medium">{s.name}</span>
                             {parseFloat(s.price_modifier) > 0 && <span className={`text-[8px] md:text-[9px] uppercase tracking-tighter ${selectedSize === s.name ? 'text-white/80' : 'text-gold/60'}`}>+${s.price_modifier}</span>}
@@ -231,7 +231,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     </Link>
                   )}
                 </AnimatePresence>
-                <div className="flex items-center border border-gold/20 h-14 bg-white/30 w-fit">
+                <div className="flex items-center border border-gold/20 h-14 bg-white/30 w-fit rounded-md overflow-hidden">
                   <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))} 
                     className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"

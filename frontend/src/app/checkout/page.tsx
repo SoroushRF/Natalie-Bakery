@@ -111,7 +111,7 @@ export default function Checkout() {
                 <label className="text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-charcoal/60 block mb-2 font-bold">Full Name</label>
                 <input 
                   required
-                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 transition-all focus:border-gold focus:bg-white outline-none text-sm"
+                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 rounded-md transition-all focus:border-gold focus:bg-white outline-none text-sm"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder="e.g. Cyrus the Great"
@@ -123,7 +123,7 @@ export default function Checkout() {
                 <input 
                   required
                   type="email"
-                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 transition-all focus:border-gold focus:bg-white outline-none text-sm"
+                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 rounded-md transition-all focus:border-gold focus:bg-white outline-none text-sm"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder="name@luxury.com"
@@ -135,7 +135,7 @@ export default function Checkout() {
                 <input 
                   required
                   type="tel"
-                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 transition-all focus:border-gold focus:bg-white outline-none text-sm"
+                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 rounded-md transition-all focus:border-gold focus:bg-white outline-none text-sm"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   placeholder="+1 (416) 000-0000"
@@ -166,7 +166,7 @@ export default function Checkout() {
                   required
                   type="date"
                   min={minDate}
-                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 transition-all focus:border-gold focus:bg-white outline-none text-sm"
+                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 rounded-md transition-all focus:border-gold focus:bg-white outline-none text-sm"
                   value={formData.pickupDate}
                   onChange={(e) => setFormData({...formData, pickupDate: e.target.value})}
                 />
@@ -179,7 +179,7 @@ export default function Checkout() {
                 </label>
                 <select 
                   required
-                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 transition-all focus:border-gold focus:bg-white outline-none text-sm"
+                  className="w-full bg-white/70 backdrop-blur-sm border border-gold/20 p-4 rounded-md transition-all focus:border-gold focus:bg-white outline-none text-sm"
                   value={formData.pickupTime}
                   onChange={(e) => setFormData({...formData, pickupTime: e.target.value})}
                 >
