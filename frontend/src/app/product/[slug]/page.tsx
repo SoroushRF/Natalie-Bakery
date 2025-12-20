@@ -123,14 +123,23 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold mb-2 block">{product.category_name}</span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-4 leading-tight">{product.name}</h1>
               <div className="flex items-baseline gap-3">
-                <p className="text-2xl md:text-3xl text-gold font-light">
-                  ${finalPrice.toFixed(2)}
-                  <span className="text-xs md:text-sm opacity-60 ml-1">/ {product.unit}</span>
-                </p>
-                {product.is_custom_cake && finalPrice > parseFloat(product.price) && (
-                  <p className="text-xs md:text-sm text-charcoal/40 line-through">${parseFloat(product.price).toFixed(2)}</p>
+              <p className={`text-2xl md:text-3xl font-light transition-colors duration-300 ${finalPrice !== parseFloat(product.price) ? 'text-gold' : 'text-charcoal'}`}>
+                ${finalPrice.toFixed(2)}
+                <span className="text-xs md:text-sm opacity-60 ml-1">/ {product.unit}</span>
+              </p>
+              <AnimatePresence>
+                {finalPrice !== parseFloat(product.price) && (
+                  <motion.p 
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    className="text-xs md:text-sm text-charcoal/40 line-through"
+                  >
+                    ${parseFloat(product.price).toFixed(2)}
+                  </motion.p>
                 )}
-              </div>
+              </AnimatePresence>
+            </div>
             </div>
 
             <p className="text-charcoal/70 leading-relaxed text-lg">
@@ -231,7 +240,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     </Link>
                   )}
                 </AnimatePresence>
-                <div className="flex items-center border border-gold/20 h-14 bg-white/30 w-fit rounded-md overflow-hidden">
+                <div className="flex items-center border border-gold/20 h-14 bg-white/30 w-fit rounded-md overflow-hidden relative z-10">
                   <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))} 
                     className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"
@@ -251,6 +260,25 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     <Plus className="h-4 w-4 text-charcoal" />
                   </button>
                 </div>
+
+                <AnimatePresence>
+                  {quantity > 1 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -20, height: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-2 pl-1 flex items-center gap-2">
+                        <span className="text-[10px] text-charcoal/40 uppercase tracking-widest font-bold">Total Selection:</span>
+                        <span className="text-sm font-serif text-gold font-bold">
+                          ${(finalPrice * quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <motion.button 
