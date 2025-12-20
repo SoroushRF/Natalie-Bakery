@@ -44,3 +44,6 @@ Thumbs.db
 # Playwright
 frontend/playwright-report/
 frontend/test-results/
+
+# Agent Workflows
+.agent/
