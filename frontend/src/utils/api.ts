@@ -2,14 +2,21 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
   try {
-    const res = await fetch(`${API_URL}${endpoint}`, {
+    // Determine the caching strategy to avoid Next.js warnings
+    const fetchOptions: any = {
       ...options,
-      next: { revalidate: 60, ...options.next },
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-    });
+    };
+
+    // If cache is explicitly set to 'no-store', don't add revalidate
+    if (options.cache !== 'no-store') {
+        fetchOptions.next = { revalidate: 60, ...options.next };
+    }
+
+    const res = await fetch(`${API_URL}${endpoint}`, fetchOptions);
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));

@@ -1,15 +1,19 @@
 import Link from "next/link";
 import { fetchAPI, getSiteContent } from "@/utils/api";
+import FeaturedCarousel from "@/components/FeaturedCarousel";
+import ProductCard from "@/components/ProductCard";
 
 export const revalidate = 0; // Disable revalidation for immediate updates as requested
 
 export default async function Home() {
   let featuredProducts = [];
+  let recentProducts = [];
   let siteContent = null;
 
   try {
-    [featuredProducts, siteContent] = await Promise.all([
-      fetchAPI('/products/?limit=4', { cache: 'no-store' } as any),
+    [featuredProducts, recentProducts, siteContent] = await Promise.all([
+      fetchAPI('/products/?is_featured=1&limit=12', { cache: 'no-store' } as any),
+      fetchAPI('/products/?ordering=-created_at&limit=8', { cache: 'no-store' } as any),
       getSiteContent()
     ]);
   } catch (err) {
@@ -20,6 +24,13 @@ export default async function Home() {
   const heroTitle = siteContent?.hero_title || 'The Art of Persian Pastry';
   const heroSubtitle = siteContent?.hero_subtitle || 'Delicate saffron, cardamom, and rosewater masterpieces crafted for the most discerning palates.';
   const heroButtonText = siteContent?.hero_button_text || 'Explore the Collection';
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const arrivalsToShow = recentProducts
+    .filter((p: any) => new Date(p.created_at) >= sevenDaysAgo)
+    .slice(0, 8);
 
   return (
     <div>
@@ -43,77 +54,93 @@ export default async function Home() {
       </section>
 
       {/* Featured Section */}
-      <section className="py-24 bg-cream">
+      <section className="py-24 bg-cream overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-serif mb-4 uppercase tracking-widest text-charcoal">Featured Creations</h2>
             <div className="w-20 h-1 bg-gold mx-auto" />
+            <p className="mt-4 text-charcoal/60 font-light italic">Hand-selected masterworks of Persian culinary art.</p>
+          </div>
+
+          {featuredProducts.length > 0 ? (
+            <FeaturedCarousel products={featuredProducts} />
+          ) : (
+            <div className="col-span-full text-center text-charcoal/40 py-12 border border-dashed border-gold/20">
+                No featured products selected.
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Recently Added Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-serif mb-4 uppercase tracking-widest text-charcoal">Latest Arrivals</h2>
+              <div className="w-20 h-1 bg-gold" />
+            </div>
+            <p className="text-charcoal/60 font-light max-w-sm">The newest additions to our collection of fine Persian pastries and custom confections.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.length > 0 ? (
-              featuredProducts.map((product: any) => (
-                <div key={product.id} className="group card flex flex-col items-center text-center">
-                  <div className="relative w-full aspect-square mb-6 overflow-hidden">
-                    <img 
-                      src={product.image || 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'} 
-                      alt={product.name}
-                      className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                  <h3 className="font-serif text-xl mb-2 text-charcoal">{product.name}</h3>
-                  <p className="text-gold font-semibold mb-4">${product.price}</p>
-                  <Link href={`/product/${product.slug}`} className="text-xs uppercase tracking-[0.2em] text-charcoal/60 hover:text-gold transition-colors">
-                    View Creation
-                  </Link>
-                </div>
+            {arrivalsToShow.length > 0 ? (
+              arrivalsToShow.map((product: any) => (
+                <ProductCard key={product.id} product={product} variant="recent" />
               ))
             ) : (
-                <div className="col-span-full text-center text-charcoal/40">
-                    No products available.
+                <div className="col-span-full text-center text-charcoal/40 py-12">
+                    Our master bakers are currently crafting new masterpieces for this week.
                 </div>
             )}
+          </div>
+
+          <div className="mt-20 text-center">
+            <Link href="/shop" className="inline-flex flex-col items-center group">
+                <span className="btn-primary mb-4 px-12 transition-transform group-hover:scale-105">Shop Entire Collection</span>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 group-hover:text-gold transition-colors">Everything we bake with love</span>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Craftsmanship/Story Section */}
-      <section className="py-24 bg-white border-y border-gold/10">
+      <section className="py-24 bg-cream border-y border-gold/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-16 items-center">
           <div>
             <h2 className="text-4xl font-serif mb-8 text-charcoal leading-tight">
               {siteContent?.about_title || "Handcrafted with Generations of Tradition"}
             </h2>
-            <div className="text-charcoal/70 mb-8 leading-relaxed whitespace-pre-line">
+            <div className="text-charcoal/70 mb-8 leading-relaxed whitespace-pre-line text-lg">
               {siteContent?.about_description || "Every item at Natalie Bakery is a labor of love. We use only the finest saffron from Khorasan, premium organic rosewater, and locally sourced dairy to ensure that every bite transports you to the heart of Persian heritage.\n\nOur master bakers follow centuries-old techniques, blending them with modern luxury to create an unforgettable sensory experience."}
             </div>
 
             {/* Dynamic Features/Text Blocks */}
             {siteContent?.features?.length > 0 && (
-              <div className="space-y-6 mb-8">
+              <div className="space-y-6 mb-12">
                 {siteContent.features.map((feature: any, idx: number) => (
-                  <div key={idx} className="border-l-2 border-gold/30 pl-4">
-                    <h3 className="font-serif text-lg text-charcoal mb-1">{feature.title}</h3>
-                    <p className="text-charcoal/60 text-sm whitespace-pre-line">{feature.text}</p>
+                  <div key={idx} className="border-l-2 border-gold/30 pl-6">
+                    <h3 className="font-serif text-xl text-charcoal mb-2">{feature.title}</h3>
+                    <p className="text-charcoal/60 text-sm whitespace-pre-line leading-relaxed">{feature.text}</p>
                   </div>
                 ))}
               </div>
             )}
 
-            <Link href="/contact" className="text-gold font-semibold uppercase tracking-widest text-sm border-b-2 border-gold pb-1 hover:text-charcoal hover:border-charcoal transition-all">
+            <Link href="/contact" className="text-gold font-bold uppercase tracking-[0.2em] text-sm border-b-2 border-gold pb-2 hover:text-charcoal hover:border-charcoal transition-all inline-block">
               {siteContent?.contact_tagline || "Visit Our Boutique"}
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6 p-4 bg-white/50 border border-white">
             <img 
               src={siteContent?.about_side_image || "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80"} 
               alt="Artisan Baking 1" 
-              className="w-full h-64 object-cover" 
+              className="w-full h-80 object-cover shadow-2xl" 
             />
             <img 
               src={siteContent?.about_side_image_2 || "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=400&q=80"} 
               alt="Artisan Baking 2" 
-              className="mt-8 w-full h-64 object-cover" 
+              className="mt-12 w-full h-80 object-cover shadow-2xl" 
             />
           </div>
         </div>
@@ -121,19 +148,19 @@ export default async function Home() {
 
       {/* Dynamic Gallery Section (Add/Remove Pics) */}
       {siteContent?.gallery_images?.length > 0 && (
-        <section className="py-24 bg-cream/30">
+        <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {siteContent.gallery_images.map((item: any, idx: number) => (
-                <div key={idx} className="aspect-square relative overflow-hidden group">
+                <div key={idx} className="aspect-square relative overflow-hidden group shadow-sm">
                   <img 
                     src={item.image} 
                     alt={item.caption || `Gallery ${idx}`}
                     className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                   />
                   {item.caption && (
-                    <div className="absolute inset-0 bg-charcoal/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <p className="text-cream text-xs uppercase tracking-widest px-4 text-center">{item.caption}</p>
+                    <div className="absolute inset-0 bg-charcoal/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity p-6">
+                      <p className="text-cream text-[10px] uppercase tracking-[0.3em] font-bold text-center leading-loose">{item.caption}</p>
                     </div>
                   )}
                 </div>

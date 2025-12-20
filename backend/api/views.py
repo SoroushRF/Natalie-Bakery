@@ -13,9 +13,11 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['category__slug', 'is_custom_cake']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category__slug', 'is_custom_cake', 'is_featured']
     search_fields = ['name', 'description']
+    ordering_fields = ['created_at', 'price']
+    ordering = ['-created_at'] # Default to newest first
     lookup_field = 'slug'
 
 class CakeOptionViewSet(viewsets.ReadOnlyModelViewSet):

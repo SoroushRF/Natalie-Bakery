@@ -23,8 +23,17 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/', null=True, blank=True)
+    UNIT_CHOICES = (
+        ('ea', 'each'),
+        ('kg', 'kg'),
+        ('lb', 'lb'),
+    )
+    unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='ea')
     is_custom_cake = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
+    available_options = models.ManyToManyField('CakeOption', blank=True, related_name='products')
     square_id = models.CharField(max_length=100, null=True, blank=True, help_text="Square Catalog Object ID")
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

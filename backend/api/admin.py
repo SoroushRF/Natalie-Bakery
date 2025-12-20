@@ -8,10 +8,26 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'is_custom_cake', 'square_id')
-    list_filter = ('category', 'is_custom_cake')
+    list_display = ('name', 'category', 'price', 'is_custom_cake', 'is_featured', 'created_at')
+    list_filter = ('category', 'is_custom_cake', 'is_featured')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'square_id')
+    filter_horizontal = ('available_options',)
+    readonly_fields = ('created_at',)
+    
+    fieldsets = (
+        (None, {
+            'fields': ('category', 'name', 'slug', 'description', 'price', 'unit', 'image', 'square_id', 'created_at')
+        }),
+        ('Customization', {
+            'fields': ('is_custom_cake', 'available_options'),
+            'description': 'If "is custom cake" is checked, selected options will appear on the product page.'
+        }),
+        ('Promotion', {
+            'fields': ('is_featured',),
+            'description': 'Featured products appear in the "Featured Collection" on the homepage.'
+        }),
+    )
 
 @admin.register(CakeOption)
 class CakeOptionAdmin(admin.ModelAdmin):

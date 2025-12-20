@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { fetchAPI } from "@/utils/api";
-import { useCartStore } from "@/store/useCartStore";
-import { Plus, Minus, CheckCircle } from "lucide-react";
+import { useCartStore, generateCartId } from "@/store/useCartStore";
+import { Plus, Minus, CheckCircle, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 
 export default function ProductDetail({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<any>(null);
@@ -16,7 +19,18 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const [addedToCart, setAddedToCart] = useState(false);
   
   const addItem = useCartStore((state) => state.addItem);
+  const cartItems = useCartStore((state) => state.items);
   const router = useRouter();
+
+  // Find if current product/option combo is in bag
+  const currentOptions = product?.is_custom_cake ? {
+    flavor: selectedFlavor,
+    filling: selectedFilling,
+    size: selectedSize
+  } : undefined;
+  
+  const currentCartId = product ? generateCartId(product.id, currentOptions) : null;
+  const inBagItem = cartItems.find((item: any) => item.cartId === currentCartId);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -24,18 +38,22 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
         const prod = await fetchAPI(`/products/${params.slug}/`);
         setProduct(prod);
         
-        if (prod.is_custom_cake) {
-          const options = await fetchAPI('/cake-options/');
+        if (prod.available_options) {
+          const options = prod.available_options;
           setCakeOptions(options);
           
-          // Set defaults
+          // Set defaults for available option types
           const flavors = options.filter((o: any) => o.option_type === 'FLAVOR');
           const fillings = options.filter((o: any) => o.option_type === 'FILLING');
           const sizes = options.filter((o: any) => o.option_type === 'SIZE');
           
           if (flavors.length) setSelectedFlavor(flavors[0].name);
           if (fillings.length) setSelectedFilling(fillings[0].name);
-          if (sizes.length) setSelectedSize(sizes[0].name);
+          
+          if (sizes.length) {
+            const regularSize = sizes.find((s: any) => s.name === 'Regular');
+            setSelectedSize(regularSize ? regularSize.name : sizes[0].name);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -46,6 +64,26 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
     loadProduct();
   }, [params.slug]);
 
+  // Dynamic Price Calculation
+  const calculateFinalPrice = () => {
+    if (!product) return 0;
+    let total = parseFloat(product.price);
+    
+    if (product.is_custom_cake) {
+      const flavorOpt = cakeOptions.find(o => o.option_type === 'FLAVOR' && o.name === selectedFlavor);
+      const fillingOpt = cakeOptions.find(o => o.option_type === 'FILLING' && o.name === selectedFilling);
+      const sizeOpt = cakeOptions.find(o => o.option_type === 'SIZE' && o.name === selectedSize);
+      
+      if (flavorOpt) total += parseFloat(flavorOpt.price_modifier);
+      if (fillingOpt) total += parseFloat(fillingOpt.price_modifier);
+      if (sizeOpt) total += parseFloat(sizeOpt.price_modifier);
+    }
+    
+    return total;
+  };
+
+  const finalPrice = calculateFinalPrice();
+
   const handleAddToCart = () => {
     const options = product.is_custom_cake ? {
       flavor: selectedFlavor,
@@ -53,7 +91,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
       size: selectedSize
     } : undefined;
 
-    addItem(product, quantity, options);
+    // We pass the calculated price so the cart knows the modified amount
+    addItem({ ...product, price: finalPrice }, quantity, options);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 3000);
   };
@@ -83,91 +122,177 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             <div>
               <span className="text-xs uppercase tracking-[0.4em] text-gold mb-2 block">{product.category_name}</span>
               <h1 className="text-5xl font-serif text-charcoal mb-4">{product.name}</h1>
-              <p className="text-2xl text-gold font-light">${product.price}</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl text-gold font-light">
+                  ${finalPrice.toFixed(2)}
+                  <span className="text-sm opacity-60 ml-1">/ {product.unit}</span>
+                </p>
+                {product.is_custom_cake && finalPrice > parseFloat(product.price) && (
+                  <p className="text-sm text-charcoal/40 line-through">${parseFloat(product.price).toFixed(2)}</p>
+                )}
+              </div>
             </div>
 
             <p className="text-charcoal/70 leading-relaxed text-lg">
               {product.description}
             </p>
 
-            {product.is_custom_cake && (
+            {cakeOptions.length > 0 && (
               <div className="space-y-6 pt-6 border-t border-gold/10">
-                <h3 className="font-serif text-xl text-charcoal">Customization Options</h3>
-                <p className="text-xs text-gold uppercase tracking-widest font-bold">Note: Custom cakes require 3-day lead time.</p>
+                <div className="flex justify-between items-center">
+                    <h3 className="font-serif text-xl text-charcoal">
+                        {product.is_custom_cake ? "Customization Options" : "Product Options"}
+                    </h3>
+                    {product.is_custom_cake && (
+                        <div className="bg-gold/10 px-3 py-1 rounded-full">
+                            <span className="text-[10px] text-gold uppercase tracking-tighter font-bold">+${(finalPrice - parseFloat(product.price)).toFixed(2)} Extras</span>
+                        </div>
+                    )}
+                </div>
+                {product.is_custom_cake && (
+                    <p className="text-xs text-gold uppercase tracking-widest font-bold">Note: Custom cakes require 3-day lead time.</p>
+                )}
                 
                 <div className="grid grid-cols-1 gap-6">
                   {/* Flavor */}
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Flavor</label>
-                    <select 
-                      value={selectedFlavor}
-                      onChange={(e) => setSelectedFlavor(e.target.value)}
-                      className="w-full bg-white border border-gold/20 p-3 rounded-none focus:outline-none focus:border-gold"
-                    >
-                      {flavors.map((f) => <option key={f.id} value={f.name}>{f.name}</option>)}
-                    </select>
-                  </div>
+                  {flavors.length > 0 && (
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Flavor</label>
+                      <div className="grid grid-cols-2 gap-2">
+                          {flavors.map((f) => (
+                              <button
+                                  key={f.id}
+                                  onClick={() => setSelectedFlavor(f.name)}
+                                  className={`text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFlavor === f.name ? 'border-gold bg-gold/5' : 'border-gold/10 hover:border-gold/30'}`}
+                              >
+                                  <span>{f.name}</span>
+                                  {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
+                              </button>
+                          ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Filling */}
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Filling</label>
-                    <select 
-                      value={selectedFilling}
-                      onChange={(e) => setSelectedFilling(e.target.value)}
-                      className="w-full bg-white border border-gold/20 p-3 rounded-none focus:outline-none focus:border-gold"
-                    >
-                      {fillings.map((f) => <option key={f.id} value={f.name}>{f.name}</option>)}
-                    </select>
-                  </div>
+                  {fillings.length > 0 && (
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Choose Filling</label>
+                      <div className="grid grid-cols-2 gap-2">
+                          {fillings.map((f) => (
+                              <button
+                                  key={f.id}
+                                  onClick={() => setSelectedFilling(f.name)}
+                                  className={`text-sm py-3 px-4 border text-left transition-all flex justify-between items-center ${selectedFilling === f.name ? 'border-gold bg-gold/5' : 'border-gold/10 hover:border-gold/30'}`}
+                              >
+                                  <span>{f.name}</span>
+                                  {parseFloat(f.price_modifier) > 0 && <span className="text-[10px] text-gold/60">+${f.price_modifier}</span>}
+                              </button>
+                          ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Size */}
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Select Size</label>
-                    <div className="flex flex-wrap gap-2">
-                      {sizes.map((s) => (
-                        <button
-                          key={s.id}
-                          onClick={() => setSelectedSize(s.name)}
-                          className={`px-6 py-2 border transition-all ${selectedSize === s.name ? 'bg-gold text-white border-gold' : 'border-gold/20 text-charcoal hover:border-gold'}`}
-                        >
-                          {s.name}
-                        </button>
-                      ))}
+                  {sizes.length > 0 && (
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-charcoal/60 mb-2 block">Select Size</label>
+                      <div className="flex flex-wrap gap-2">
+                        {sizes.map((s) => (
+                          <button
+                            key={s.id}
+                            onClick={() => setSelectedSize(s.name)}
+                            className={`px-6 py-2 border transition-all flex flex-col items-center min-w-[100px] ${selectedSize === s.name ? 'bg-gold text-white border-gold' : 'border-gold/20 text-charcoal hover:border-gold'}`}
+                          >
+                            <span className="text-sm font-medium">{s.name}</span>
+                            {parseFloat(s.price_modifier) > 0 && <span className={`text-[9px] uppercase tracking-tighter ${selectedSize === s.name ? 'text-white/80' : 'text-gold/60'}`}>+${s.price_modifier}</span>}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
 
-            <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row gap-6">
-              <div className="flex items-center border border-gold/20 h-14">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-4 hover:bg-gold/10">
-                  <Minus className="h-4 w-4" />
-                </button>
-                <input 
-                  type="number" 
-                  value={quantity} 
-                  readOnly 
-                  className="w-12 text-center bg-transparent font-medium"
-                />
-                <button onClick={() => setQuantity(quantity + 1)} className="p-4 hover:bg-gold/10">
-                  <Plus className="h-4 w-4" />
-                </button>
+            <div className="pt-8 border-t border-gold/10 flex flex-col sm:flex-row gap-6 items-end">
+              <div className="w-full sm:w-auto">
+                <AnimatePresence>
+                  {inBagItem && (
+                    <Link href="/cart">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="flex items-center gap-2 text-gold text-[10px] uppercase tracking-widest font-bold mb-3 hover:underline cursor-pointer underline-offset-4 transition-all"
+                      >
+                        <ShoppingBag size={12} />
+                        {inBagItem.quantity} ALREADY IN YOUR BAG
+                      </motion.div>
+                    </Link>
+                  )}
+                </AnimatePresence>
+                <div className="flex items-center border border-gold/20 h-14 bg-white/30 w-fit">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                    className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"
+                  >
+                    <Minus className="h-4 w-4 text-charcoal" />
+                  </button>
+                  <input 
+                    type="number" 
+                    value={quantity} 
+                    readOnly 
+                    className="w-16 text-center bg-transparent font-sans text-xl font-medium text-charcoal focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)} 
+                    className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10"
+                  >
+                    <Plus className="h-4 w-4 text-charcoal" />
+                  </button>
+                </div>
               </div>
 
-              <button 
+              <motion.button 
+                layout
                 onClick={handleAddToCart}
-                className="btn-primary flex-1 h-14 flex items-center justify-center gap-3 active:scale-[0.98]"
+                className={`btn-primary flex-1 h-14 flex items-center justify-center relative overflow-hidden active:scale-[0.98] transition-colors duration-500 ${addedToCart ? 'bg-charcoal text-gold border-charcoal' : ''}`}
               >
-                {addedToCart ? (
-                  <>
-                    <CheckCircle className="h-5 w-5" />
-                    ADDED TO BAG
-                  </>
-                ) : (
-                  "ADD TO SHOPPING BAG"
+                <AnimatePresence mode="wait">
+                  {addedToCart ? (
+                    <motion.div 
+                      key="added"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      className="flex items-center gap-3"
+                    >
+                      <CheckCircle className="h-5 w-5" />
+                      <span className="font-bold tracking-widest">ADDED TO BAG</span>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="add"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      className="flex items-center gap-3"
+                    >
+                      <span className="font-bold tracking-widest">ADD TO SHOPPING BAG</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                {/* Subtle shine effect on click */}
+                {addedToCart && (
+                  <motion.div 
+                    initial={{ x: '-150%', opacity: 0 }}
+                    animate={{ x: '250%', opacity: 1 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="absolute top-0 bottom-0 w-32 bg-white/20 skew-x-[-25deg] pointer-events-none z-10"
+                  />
                 )}
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>

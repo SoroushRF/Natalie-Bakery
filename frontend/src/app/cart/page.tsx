@@ -1,10 +1,33 @@
 "use client";
+import { useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import Link from "next/link";
-import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, X } from "lucide-react";
+
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
+  const [itemToConfirmRemove, setItemToConfirmRemove] = useState<any>(null);
+
+  const handleDecreaseQuantity = (item: any) => {
+    if (item.quantity === 1) {
+      setItemToConfirmRemove(item);
+    } else {
+      updateQuantity(item.cartId, item.quantity - 1);
+    }
+  };
+
+  const handleRemoveClick = (item: any) => {
+    setItemToConfirmRemove(item);
+  };
+
+  const confirmRemoval = () => {
+    if (itemToConfirmRemove) {
+      removeItem(itemToConfirmRemove.cartId);
+      setItemToConfirmRemove(null);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -39,25 +62,35 @@ export default function Cart() {
                 
                 <div className="flex-1 text-center sm:text-left">
                   <h3 className="font-serif text-xl text-charcoal">{item.name}</h3>
-                  {item.isCustomCake && (
-                    <div className="text-[10px] uppercase tracking-widest text-gold mt-1">
-                      {item.flavor} &bull; {item.filling} &bull; {item.size}
-                    </div>
-                  )}
-                  <p className="text-charcoal/60 text-sm mt-2">${item.price}</p>
+                  <div className="text-[10px] uppercase tracking-widest text-gold mt-1">
+                    {item.size}
+                    {item.flavor && <> &bull; {item.flavor}</>}
+                    {item.filling && <> &bull; {item.filling}</>}
+                  </div>
+                  <p className="text-charcoal/60 text-sm mt-2">${Number(item.price).toFixed(2)}</p>
                 </div>
 
-                <div className="flex items-center border border-gold/20 h-10">
-                  <button onClick={() => updateQuantity(item.cartId, Math.max(1, item.quantity - 1))} className="px-3 hover:bg-gold/10">&minus;</button>
-                  <span className="w-8 text-center text-sm">{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.cartId, item.quantity + 1)} className="px-3 hover:bg-gold/10">+</button>
+                <div className="flex items-center border border-gold/20 h-10 w-fit bg-cream/30">
+                  <button 
+                    onClick={() => handleDecreaseQuantity(item)} 
+                    className="h-full px-3 flex items-center justify-center hover:bg-gold/10 transition-colors border-r border-gold/10"
+                  >
+                    &minus;
+                  </button>
+                  <span className="w-10 text-center text-sm font-sans font-bold text-charcoal">{item.quantity}</span>
+                  <button 
+                    onClick={() => updateQuantity(item.cartId, item.quantity + 1)} 
+                    className="h-full px-3 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10"
+                  >
+                    +
+                  </button>
                 </div>
 
                 <div className="w-24 text-right">
                   <p className="font-bold text-charcoal">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
-                <button onClick={() => removeItem(item.cartId)} className="p-2 text-charcoal/30 hover:text-red-500 transition-colors">
+                <button onClick={() => handleRemoveClick(item)} className="p-2 text-charcoal/30 hover:text-red-500 transition-colors">
                   <Trash2 className="h-5 w-5" />
                 </button>
               </div>
@@ -96,6 +129,58 @@ export default function Cart() {
           </div>
         </div>
       </div>
+
+      {/* Custom Confirmation Modal with Framer Motion */}
+      <AnimatePresence>
+        {itemToConfirmRemove && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm transition-opacity" 
+              onClick={() => setItemToConfirmRemove(null)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="relative bg-white max-w-sm w-full p-8 border border-gold/30 shadow-2xl"
+            >
+              <button 
+                onClick={() => setItemToConfirmRemove(null)}
+                className="absolute top-4 right-4 text-charcoal/30 hover:text-charcoal transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <div className="text-center">
+                <Trash2 className="h-10 w-10 text-gold mx-auto mb-6 opacity-40" />
+                <h2 className="font-serif text-2xl text-charcoal mb-4">Remove Selection?</h2>
+                <p className="text-charcoal/60 text-sm mb-8 leading-relaxed">
+                  Are you sure you want to remove <span className="font-bold text-charcoal">{itemToConfirmRemove.name}</span> from your collection?
+                </p>
+                
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={confirmRemoval}
+                    className="bg-charcoal text-white py-3 uppercase tracking-widest text-xs font-bold hover:bg-black transition-colors"
+                  >
+                    Yes, Remove Item
+                  </button>
+                  <button 
+                    onClick={() => setItemToConfirmRemove(null)}
+                    className="border border-gold/20 py-3 uppercase tracking-widest text-xs font-bold hover:bg-cream transition-colors text-charcoal"
+                  >
+                    Keep in Bag
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

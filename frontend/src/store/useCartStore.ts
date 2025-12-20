@@ -24,7 +24,7 @@ interface CartStore {
 }
 
 // Generate unique ID for cart items (since same product might have different options)
-const generateCartId = (productId: number, options?: any) => {
+export const generateCartId = (productId: number, options?: any) => {
   if (!options) return productId.toString();
   return `${productId}-${JSON.stringify(options)}`;
 };

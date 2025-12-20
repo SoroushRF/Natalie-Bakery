@@ -33,14 +33,14 @@ export default function Footer() {
   return (
     <footer className="bg-charcoal text-cream py-16 border-t border-gold/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
           {/* Brand */}
-          <div className="space-y-6">
-            <h3 className="font-serif text-3xl tracking-tight">NATALIE <span className="text-gold">BAKERY</span></h3>
-            <p className="text-cream/60 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+          <div className="space-y-6 flex flex-col items-center">
+            <h3 className="font-serif text-3xl tracking-tight text-cream">NATALIE <span className="text-gold">BAKERY</span></h3>
+            <p className="text-cream/60 text-sm leading-relaxed max-w-xs mx-auto">
               {siteContent?.footer_tagline || "Natalie Bakery Limited — Where traditional Persian artistry meets modern luxury in the heart of Thornhill."}
             </p>
-            <div className="flex justify-center md:justify-start gap-4">
+            <div className="flex justify-center gap-4">
               <a href={instagramLink} target="_blank" className="text-gold hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
@@ -49,7 +49,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-serif text-lg mb-6 text-gold uppercase tracking-widest flex items-center justify-center md:justify-start gap-2">
+            <h4 className="font-serif text-lg mb-6 text-gold uppercase tracking-widest flex items-center justify-center gap-2">
               <MapPin className="h-4 w-4" /> Reach Us
             </h4>
             <ul className="text-sm text-cream/60 space-y-4">
@@ -59,7 +59,7 @@ export default function Footer() {
                   Thornhill, ON L3T 5W2
                 </a>
               </li>
-              <li className="flex items-center justify-center md:justify-start gap-2 text-cream font-medium">
+              <li className="flex items-center justify-center gap-2 text-cream font-medium">
                 <Phone className="h-4 w-4 text-gold" />
                 <a href="tel:+14165669693" className="hover:text-gold transition-colors">+1 (416) 566-9693</a>
               </li>
@@ -68,7 +68,7 @@ export default function Footer() {
 
           {/* Hours */}
           <div>
-            <h4 className="font-serif text-lg mb-6 text-gold uppercase tracking-widest flex items-center justify-center md:justify-start gap-2">
+            <h4 className="font-serif text-lg mb-6 text-gold uppercase tracking-widest flex items-center justify-center gap-2">
               <Clock className="h-4 w-4" /> Hours
             </h4>
             <div className="space-y-3">
@@ -81,7 +81,7 @@ export default function Footer() {
                 <span>10:00 AM – 7:00 PM</span>
               </div>
               
-              <div className="pt-2 flex justify-center md:justify-start">
+              <div className="pt-2 flex justify-center">
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${isOpen ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
                   <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOpen ? 'bg-green-500' : 'bg-red-500'}`} />
                   {isOpen ? 'Open Now' : 'Closed'}
