@@ -254,9 +254,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               </div>
 
               <motion.button 
-                layout
                 onClick={handleAddToCart}
-                className={`btn-primary flex-1 h-14 flex items-center justify-center relative overflow-hidden active:scale-[0.98] transition-colors duration-500 ${addedToCart ? 'bg-charcoal text-gold border-charcoal' : ''}`}
+                className={`btn-primary w-full sm:flex-1 h-14 flex items-center justify-center relative overflow-hidden active:scale-[0.98] transition-colors duration-500 ${addedToCart ? 'bg-charcoal text-gold border-charcoal' : ''}`}
               >
                 <AnimatePresence mode="wait">
                   {addedToCart ? (
