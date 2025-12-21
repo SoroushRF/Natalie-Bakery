@@ -1,5 +1,10 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Category, Product, CakeOption, Order, OrderItem, SiteContent, UIAsset, SiteFeature, SiteGalleryImage
+
+admin.site.site_header = "Natalie Bakery Administration"
+admin.site.site_title = "Natalie Bakery Admin Portal"
+admin.site.index_title = "Welcome to the Natalie Bakery Management Console"
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -8,16 +13,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'is_custom_cake', 'is_featured', 'created_at')
+    list_display = ('image_preview', 'name', 'category', 'price', 'is_custom_cake', 'is_featured')
+    list_display_links = ('image_preview', 'name')
     list_filter = ('category', 'is_custom_cake', 'is_featured')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'square_id')
     filter_horizontal = ('available_options',)
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'image_preview_large')
     
     fieldsets = (
         (None, {
-            'fields': ('category', 'name', 'slug', 'description', 'price', 'unit', 'image', 'square_id', 'created_at')
+            'fields': ('category', 'name', 'slug', 'description', 'price', 'unit', 'image', 'image_preview_large', 'square_id', 'created_at')
         }),
         ('Customization', {
             'fields': ('is_custom_cake', 'available_options'),
@@ -28,6 +34,18 @@ class ProductAdmin(admin.ModelAdmin):
             'description': 'Featured products appear in the "Featured Collection" on the homepage.'
         }),
     )
+
+    def image_preview(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="50" height="50" style="object-fit: cover; border-radius: 4px;" />')
+        return "No Image"
+    image_preview.short_description = 'Preview'
+
+    def image_preview_large(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="200" style="border-radius: 8px;" />')
+        return "No Image Preview available"
+    image_preview_large.short_description = 'Image Preview'
 
 @admin.register(CakeOption)
 class CakeOptionAdmin(admin.ModelAdmin):

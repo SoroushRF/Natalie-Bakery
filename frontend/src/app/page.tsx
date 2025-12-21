@@ -71,6 +71,12 @@ export default async function Home() {
                 No featured products selected.
             </div>
           )}
+          
+          <div className="mt-12 md:mt-20 text-center">
+            <Link href="/shop" className="inline-flex flex-col items-center group">
+                <span className="btn-primary mb-4 px-8 md:px-12 transition-transform group-hover:scale-105">Shop Entire Collection</span>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -99,7 +105,7 @@ export default async function Home() {
 
           <div className="mt-12 md:mt-20 text-center">
             <Link href="/shop" className="inline-flex flex-col items-center group">
-                <span className="btn-primary mb-4 px-8 md:px-12 transition-transform group-hover:scale-105">Shop Entire Collection</span>
+                <span className="btn-primary mb-4 px-8 md:px-12 transition-transform group-hover:scale-105">Shop More Items</span>
                 <span className="text-[9px] md:text-[10px] uppercase tracking-[0.4em] text-charcoal/40 group-hover:text-gold transition-colors">Everything we bake with love</span>
             </Link>
           </div>

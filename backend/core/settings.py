@@ -26,6 +26,7 @@ BAKERY_METADATA = {
 
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,64 @@ INSTALLED_APPS = [
     
     'api',
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Natalie Bakery Admin",
+    "site_header": "Natalie Bakery",
+    "site_brand": "Natalie Bakery",
+    # "site_logo": "products/logo.png", # If you have a logo asset
+    "login_logo": None,
+    "login_logo_dark": None,
+    "site_logo_classes": "img-circle",
+    "add_section_at_top": True,
+    "show_ui_builder": False,
+    "changeform_format": "horizontal_tabs",
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "api.Category": "fas fa-list",
+        "api.Product": "fas fa-birthday-cake",
+        "api.CakeOption": "fas fa-cogs",
+        "api.Order": "fas fa-shopping-cart",
+        "api.SiteContent": "fas fa-globe",
+        "api.UIAsset": "fas fa-image",
+    },
+    "order_with_respect_to": ["api.Order", "api.Product", "api.Category"],
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark bg-dark", # Using dark theme to match Charcoal
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary", # We can't easily link your frontend CSS, but we can use Bootstrap classes
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
