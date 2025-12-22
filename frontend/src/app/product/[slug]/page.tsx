@@ -353,8 +353,9 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     className="w-16 text-center bg-transparent font-sans text-xl font-medium text-charcoal focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <button 
-                    onClick={() => setQuantity(quantity + 1)} 
-                    className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10"
+                    onClick={() => setQuantity(Math.min(10, quantity + 1))} 
+                    disabled={quantity >= 10}
+                    className="h-full w-14 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <Plus className="h-4 w-4 text-charcoal" />
                   </button>

@@ -41,7 +41,7 @@ export const useCartStore = create<CartStore>()(
           set({
             items: get().items.map((item: any) =>
               item.cartId === cartId
-                ? { ...item, quantity: item.quantity + quantity }
+                ? { ...item, quantity: Math.min(10, item.quantity + quantity) }
                 : item
             ),
           });
@@ -56,7 +56,7 @@ export const useCartStore = create<CartStore>()(
                 name: product.name,
                 price: parseFloat(product.price),
                 image: product.image,
-                quantity,
+                quantity: Math.min(10, quantity),
                 isCustomCake: product.is_custom_cake,
                 ...options,
               },
@@ -72,7 +72,7 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: (cartId, quantity) => {
         set({
           items: get().items.map((item: any) =>
-            item.cartId === cartId ? { ...item, quantity } : item
+            item.cartId === cartId ? { ...item, quantity: Math.min(10, Math.max(1, quantity)) } : item
           ),
         });
       },

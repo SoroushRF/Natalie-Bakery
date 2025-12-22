@@ -83,4 +83,22 @@ describe('useCartStore', () => {
     
     expect(useCartStore.getState().getTotalPrice()).toBe(40);
   });
+  
+  it('enforces a maximum quantity of 10 items', () => {
+    useCartStore.getState().addItem(mockProduct, 15);
+    expect(useCartStore.getState().items[0].quantity).toBe(10);
+    
+    useCartStore.getState().addItem(mockProduct, 5); 
+    expect(useCartStore.getState().items[0].quantity).toBe(10); // Still 10
+  });
+
+  it('enforces a maximum quantity when updating', () => {
+    const cartId = generateCartId(mockProduct.id);
+    useCartStore.getState().addItem(mockProduct, 1);
+    useCartStore.getState().updateQuantity(cartId, 20);
+    expect(useCartStore.getState().items[0].quantity).toBe(10);
+    
+    useCartStore.getState().updateQuantity(cartId, -5);
+    expect(useCartStore.getState().items[0].quantity).toBe(1); // Floor is 1
+  });
 });

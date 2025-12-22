@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 import { ContentProvider } from "@/context/ContentContext";
 import { getSiteContent } from "@/utils/api";
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
             {children}
           </main>
           <Footer />
+          <ScrollToTop />
         </ContentProvider>
       </body>
     </html>

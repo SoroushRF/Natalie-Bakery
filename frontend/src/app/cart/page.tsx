@@ -101,8 +101,9 @@ export default function Cart() {
                   </button>
                   <span className="w-10 text-center text-sm font-sans font-bold text-charcoal">{item.quantity}</span>
                   <button 
-                    onClick={() => updateQuantity(item.cartId, item.quantity + 1)} 
-                    className="h-full px-4 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10 text-xl font-light"
+                    onClick={() => updateQuantity(item.cartId, Math.min(10, item.quantity + 1))} 
+                    disabled={item.quantity >= 10}
+                    className="h-full px-4 flex items-center justify-center hover:bg-gold/10 transition-colors border-l border-gold/10 text-xl font-light disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     +
                   </button>
