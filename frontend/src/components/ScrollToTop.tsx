@@ -13,8 +13,8 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button when user scrolls down 400px
-      if (window.scrollY > 400) {
+      // Show button when user scrolls down 800px
+      if (window.scrollY > 800) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
