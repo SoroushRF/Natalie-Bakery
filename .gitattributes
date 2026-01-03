@@ -1,0 +1,22 @@
+
+frontend/package-lock.json linguist-generated
+frontend/yarn.lock linguist-generated
+frontend/pnpm-lock.yaml linguist-generated
+
+frontend/next.config.mjs linguist-generated
+frontend/postcss.config.js linguist-generated
+frontend/tailwind.config.ts linguist-generated
+frontend/tsconfig.json linguist-generated
+frontend/package.json linguist-generated
+frontend/playwright.config.ts linguist-generated
+frontend/vitest.config.ts linguist-generated
+
+frontend/next-env.d.ts linguist-generated
+
+frontend/e2e/** linguist-vendored
+frontend/src/test/** linguist-vendored
+
+frontend/.next/** linguist-generated
+frontend/out/** linguist-generated
+frontend/node_modules/** linguist-generated
+*.css linguist-vendored
